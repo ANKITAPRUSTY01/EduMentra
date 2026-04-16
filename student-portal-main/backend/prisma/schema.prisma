@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-py"
+  interface = "asyncio"
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  roll_number   String  @unique
+  full_name     String
+  password_hash String
+  role          String
+  department    String?
+  attendance    Int?    @default(0)
+  leaves        Leave[]
+}
+
+model Leave {
+  id             Int     @id @default(autoincrement())
+  student_id     Int
+  reason         String
+  duration       String
+  start_date     String?
+  status         String  @default("pending")
+  classification String?
+  student        User    @relation(fields: [student_id], references: [id])
+}
